@@ -1,0 +1,7 @@
+
+./src/House_Prices.csv
+./notebooks/__pycache__
+
+./notebooks/extract/__pycache__
+./notebooks/transfaire/__pycache__
+./notebooks/load/__pycache__
