@@ -1,36 +1,37 @@
 from notebooks.silver import silver_data 
 
-fe_data = silver_data.copy()
+def create_features(data):
+    fe_data = data.copy()
+    # TotalSF = TotalBsmtSF + 1stFlrSF + 2ndFlrSF
+    fe_data["TotalSF"] = (
+        fe_data["TotalBsmtSF"] 
+        + fe_data["1stFlrSF"] 
+        + fe_data["2ndFlrSF"]
+        )
 
-# TotalSF = TotalBsmtSF + 1stFlrSF + 2ndFlrSF
-fe_data["TotalSF"] = (
-    fe_data["TotalBsmtSF"] 
-    + fe_data["1stFlrSF"] 
-    + fe_data["2ndFlrSF"]
+    # TotalBathrooms = FullBath + 0.5 * HalfBath + BsmtFullBath + 0.5 * BsmtHalfBath
+    fe_data["TotalBathrooms"] = (
+        fe_data["FullBath"]
+        + 0.5 * fe_data["HalfBath"]
+        + fe_data["BsmtFullBath"]
+        + 0.5 * fe_data["BsmtHalfBath"]
     )
 
-# TotalBathrooms = FullBath + 0.5 * HalfBath + BsmtFullBath + 0.5 * BsmtHalfBath
-fe_data["TotalBathrooms"] = (
-    fe_data["FullBath"]
-    + 0.5 * fe_data["HalfBath"]
-    + fe_data["BsmtFullBath"]
-    + 0.5 * fe_data["BsmtHalfBath"]
-)
+    # HouseAge = YrSold - YearBuilt
+    fe_data["HouseAge"] = (
+        fe_data["YrSold"] - fe_data["YearBuilt"]
+    )
 
-# HouseAge = YrSold - YearBuilt
-fe_data["HouseAge"] = (
-    fe_data["YrSold"] - fe_data["YearBuilt"]
-)
+    # TotalPorchSF = OpenPorchSF + EnclosedPorch + 3SsnPorch + ScreenPorch + WoodDeckSF
+    fe_data["TotalPorchSF"] = (
+        fe_data["OpenPorchSF"]
+        + fe_data["EnclosedPorch"]
+        + fe_data["3SsnPorch"]
+        + fe_data["ScreenPorch"]
+        + fe_data["WoodDeckSF"]
+    )
 
-# TotalPorchSF = OpenPorchSF + EnclosedPorch + 3SsnPorch + ScreenPorch + WoodDeckSF
-fe_data["TotalPorchSF"] = (
-    fe_data["OpenPorchSF"]
-    + fe_data["EnclosedPorch"]
-    + fe_data["3SsnPorch"]
-    + fe_data["ScreenPorch"]
-    + fe_data["WoodDeckSF"]
-)
-
+    return fe_data
 
 def report():
 
@@ -81,5 +82,7 @@ def report():
     print("total porch missing values".center(80, '-'))
     print(fe_data["TotalPorchSF"].isnull().sum())
 
+fe_data = create_features(silver_data)
+
 if __name__ == "__main__" :
-    report()
+    report()    
